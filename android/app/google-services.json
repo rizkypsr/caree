@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "656438834033",
+    "project_id": "caree-app",
+    "storage_bucket": "caree-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656438834033:android:1bafbf94d6ed83cf7ffcd0",
+        "android_client_info": {
+          "package_name": "com.food.caree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656438834033-sa4u6qsia15lfc1ondiipdiftj66864o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAh5YbCcQiJCd3ebPNSVXaDXhO3rfD0eQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656438834033-sa4u6qsia15lfc1ondiipdiftj66864o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
