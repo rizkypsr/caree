@@ -4,7 +4,7 @@ import 'package:caree/models/user.dart';
 import 'address_point.dart';
 
 class Food {
-  late String? uuid;
+  late int? id;
   late String name;
   late String description;
   late String? picture;
@@ -17,7 +17,7 @@ class Food {
   late List<Order>? order;
 
   Food({
-    this.uuid,
+    this.id,
     required this.name,
     required this.description,
     this.picture,
@@ -32,7 +32,7 @@ class Food {
 
   Food.fromJson(
       Map<String, dynamic> json, Function(Map<String, dynamic>) create) {
-    uuid = json['uuid'];
+    id = json['id'];
     name = json['name'];
     description = json['description'];
     picture = json['picture'];
@@ -54,7 +54,7 @@ class Food {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['uuid'] = this.uuid;
+    data['id'] = this.id;
     data['name'] = this.name;
     data['description'] = this.description;
     data['picture'] = this.picture;
@@ -68,10 +68,5 @@ class Food {
       data['user'] = this.user!.toJson();
     }
     return data;
-  }
-
-  @override
-  String toString() {
-    return 'Food: {id : $uuid, name : $name, point: {$addressPoint}, user : $user, order: $order}';
   }
 }

@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:caree/models/food.dart';
 import 'package:caree/models/single_res.dart';
 import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/food_provider.dart';
+
 import 'package:caree/utils/user_secure_storage.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,6 +18,8 @@ class FoodController extends GetxController {
   var isLoading = false.obs;
   var imagePath = "".obs;
 
+  var _foodProvider = FoodProvider(DioClient().init());
+
   @override
   void onInit() {
     fetchListFood();
@@ -23,27 +27,31 @@ class FoodController extends GetxController {
   }
 
   Future<void> fetchListFood() async {
-    showLoading();
+    try {
+      showLoading();
 
-    var res = await API.getAllFood();
-    var pos = await _getCurrentLocation();
+      var res = await _foodProvider.getAllFood();
+      var pos = await _getCurrentLocation();
 
-    List<Food> food = res.data.data
-        .where((element) => element.order!.isNotEmpty
-            ? element.order![0].status != "FINISHED"
-            : true)
-        .toList();
+      List<Food> food = res.data.data
+          .where((element) => element.order!.isNotEmpty
+              ? element.order![0].status != "FINISHED"
+              : true)
+          .toList();
 
-    food.forEach((it) {
-      it.distance = _distanceInMeters(it.addressPoint!.coordinates[0],
-          it.addressPoint!.coordinates[1], pos.latitude, pos.longitude);
-    });
+      food.forEach((it) {
+        it.distance = _distanceInMeters(it.addressPoint!.coordinates[0],
+            it.addressPoint!.coordinates[1], pos.latitude, pos.longitude);
+      });
 
-    listFood.clear();
+      listFood.clear();
 
-    listFood.addAll(food);
+      listFood.addAll(food);
 
-    hideLoading();
+      hideLoading();
+    } catch (e) {
+      print("logs: $e");
+    }
   }
 
   Future<Position> _getCurrentLocation() async {
@@ -67,7 +75,7 @@ class FoodController extends GetxController {
 
   Future<SingleResponse> saveFood(food, imagePath) async {
     showLoading();
-    var res = await API.addFood(food, File(imagePath));
+    var res = await _foodProvider.addFood(food, File(imagePath));
     hideLoading();
     fetchListFood();
     return res;
@@ -76,7 +84,7 @@ class FoodController extends GetxController {
   Future<SingleResponse> updateFood(food) async {
     EasyLoading.show(status: 'loading...');
     var file = imagePath.value.isNotEmpty ? File(imagePath.value) : null;
-    var res = await API.updateFoodData(food, file);
+    var res = await _foodProvider.updateFoodData(food, file);
     return res;
   }
 
@@ -84,7 +92,7 @@ class FoodController extends GetxController {
     showLoading();
     var localUser = await UserSecureStorage.getUser();
     var user = User.fromJson(json.decode(localUser!));
-    var res = await API.getAllFoodById(user.uuid!);
+    var res = await _foodProvider.getAllFoodById(user.id!);
     hideLoading();
 
     listFoodById.clear();
@@ -94,10 +102,10 @@ class FoodController extends GetxController {
     return res.data.data;
   }
 
-  Future<void> deleteFood(uuid) async {
+  Future<void> deleteFood(id) async {
     EasyLoading.show(status: "Tunggu sebentar...");
 
-    await API.deleteFood(uuid);
+    await _foodProvider.deleteFood(id);
 
     EasyLoading.dismiss();
 

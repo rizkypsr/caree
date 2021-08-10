@@ -1,8 +1,7 @@
 import 'package:caree/constants.dart';
 import 'package:caree/core/controllers/user_controller.dart';
-import 'package:caree/models/user.dart';
+import 'package:caree/core/view/widgets/loading.dart';
 import 'package:caree/providers/auth.dart';
-import 'package:caree/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -27,8 +26,7 @@ class ProfileScreen extends StatelessWidget {
         child: Text("Logout"),
         onPressed: () async {
           await Auth.logOut();
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(kHomeRoute, (route) => false);
+          Get.offAndToNamed(kWelcomeRoute);
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
@@ -102,10 +100,13 @@ class ProfileScreen extends StatelessWidget {
                         SizedBox(
                           width: 20.0,
                         ),
-                        Text(
-                          user.fullname,
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            user.fullname!,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                                fontSize: 18.0, fontWeight: FontWeight.bold),
+                          ),
                         )
                       ],
                     ),

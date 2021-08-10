@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:caree/constants.dart';
 import 'package:caree/core/controllers/user_controller.dart';
+import 'package:caree/core/view/login/widgets/rounded_text_field.dart';
 import 'package:caree/models/single_res.dart';
 import 'package:caree/models/user.dart';
-import 'package:caree/view/login/widgets/phone_text_field.dart';
-import 'package:caree/view/login/widgets/rounded_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +13,6 @@ import 'package:image_picker/image_picker.dart';
 class ProfileFormScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
   final UserController _userController = Get.find<UserController>();
 
   _getImageFromGallery() async {
@@ -41,24 +39,17 @@ class ProfileFormScreen extends StatelessWidget {
     }
   }
 
-  _updateUser(String uuid) async {
+  _updateUser(int id) async {
     String userFullname = _nameController.text;
     String userEmail = _emailController.text;
-    String userPhone = _phoneController.text;
 
-    if (userFullname.isNotEmpty &&
-        userEmail.isNotEmpty &&
-        userPhone.isNotEmpty) {
-      var _user = User(
-          uuid: uuid,
-          fullname: userFullname,
-          email: userEmail,
-          phone: userPhone);
+    if (userFullname.isNotEmpty && userEmail.isNotEmpty) {
+      var _user = User(id: id, fullname: userFullname, email: userEmail);
 
       SingleResponse res = await _userController.updateUser(_user);
 
       if (res.success) {
-        await _userController.fetchUser(uuid);
+        await _userController.fetchUser(id);
       } else {
         EasyLoading.showError(res.message);
       }
@@ -77,7 +68,6 @@ class ProfileFormScreen extends StatelessWidget {
     if (user != null) {
       _nameController.text = user.fullname;
       _emailController.text = user.email;
-      _phoneController.text = user.phone;
     }
 
     return Scaffold(
@@ -202,22 +192,12 @@ class ProfileFormScreen extends StatelessWidget {
             SizedBox(
               height: 10.0,
             ),
-            PhoneTextField(
-              controller: _phoneController,
-              label: "Nomor hp",
-              hintText: "Masukkan no hp",
-              color: kSecondaryColor.withOpacity(0.3),
-              backgroundColor: kPrimaryColor.withOpacity(0.2),
-            ),
-            SizedBox(
-              height: 30.0,
-            ),
             SizedBox(
               width: double.infinity,
               height: 45,
               child: ElevatedButton(
                   onPressed: () async {
-                    _updateUser(user.uuid);
+                    _updateUser(user.id);
                   },
                   child: Text('Ubah Data'),
                   style: ElevatedButton.styleFrom(

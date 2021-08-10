@@ -1,68 +1,21 @@
 import 'package:caree/constants.dart';
-import 'package:caree/models/single_res.dart';
-import 'package:caree/utils/user_secure_storage.dart';
+import 'package:caree/network/interceptors/app_interceptor.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-class HttpClient {
-  HttpClient() {
-    client = Dio();
-    client.options.baseUrl = SERVER_IP;
-    client.options.connectTimeout = 12000;
-    client.options.receiveTimeout = 30000;
-    client.options.followRedirects = false;
-    client.options.validateStatus = (status) {
-      return status! < 500;
-    };
-  }
+class DioClient {
+  Dio init() {
+    Dio _dio = Dio();
+    _dio.interceptors.addAll([PrettyDioLogger(), AppInterceptors()]);
 
-  late Dio client;
+    _dio.options.baseUrl = SERVER_IP;
+    _dio.options.connectTimeout = 8000;
+    _dio.options.receiveTimeout = 3000;
+    _dio.options.followRedirects = false;
+    // _dio.options.validateStatus = (status) {
+    //   return status! < 500;
+    // };
 
-  void setToken(String authToken) {
-    client.options.headers['Authorization'] = 'Bearer $authToken';
-  }
-
-  Future<void> clientSetup() async {
-    String? authToken = await UserSecureStorage.getToken();
-    if (authToken != null)
-      client.options.headers['Authorization'] = 'Bearer $authToken';
-  }
-
-  Future<Response> getRequest(String endpoint) async {
-    Response response = await client.get(endpoint);
-
-    return response;
-  }
-
-  Future<Response> postRequest(String endpoint, dynamic data) async {
-    Response response = await client.post(endpoint,
-        data: data,
-        onSendProgress: (sent, total) =>
-            EasyLoading.show(status: 'loading...'));
-
-    return response;
-  }
-
-  Future<Response> postRequestWihtoutLoading(
-      String endpoint, dynamic data) async {
-    Response response = await client.post(
-      endpoint,
-      data: data,
-    );
-
-    return response;
-  }
-
-  Future<Response> putRequest(String endpoint, dynamic data) async {
-    Response response = await client.put(endpoint,
-        data: data,
-        onSendProgress: (sent, total) =>
-            EasyLoading.show(status: 'loading...'));
-    return response;
-  }
-
-  Future<Response> deleteRequest(String url) async {
-    Response response = await client.delete(url);
-    return response;
+    return _dio;
   }
 }

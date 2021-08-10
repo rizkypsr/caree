@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:caree/constants.dart';
 import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/auth.dart';
+import 'package:caree/providers/user_provider.dart';
+
 import 'package:caree/utils/user_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -19,9 +22,11 @@ class EmailVerifyScreen extends StatefulWidget {
 class _EmailVerifyScreenState extends State<EmailVerifyScreen>
     with WidgetsBindingObserver {
   User? user;
+  var _userProvider = UserProvider(DioClient().init());
+  var _authProvider = Auth(DioClient().init());
 
   getUser() async {
-    var res = await API.getUserById(widget.user.uuid!);
+    var res = await _userProvider.getUserById(widget.user.id!);
 
     await UserSecureStorage.setUser(json.encode(res.data.data));
 
@@ -104,7 +109,7 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen>
                   height: 45,
                   child: ElevatedButton(
                       onPressed: () async {
-                        await API.getVerification(widget.user.email);
+                        await _authProvider.getVerification(widget.user.email!);
                         EasyLoading.showInfo('Silahkan cek email kamu!');
                       },
                       child: Text('KIRIM ULANG'),

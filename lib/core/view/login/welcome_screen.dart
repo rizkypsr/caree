@@ -1,6 +1,6 @@
 import 'package:caree/constants.dart';
-import 'package:caree/view/login/login_screen.dart';
-import 'package:caree/view/login/register.screen.dart';
+import 'package:caree/core/view/login/login_screen.dart';
+import 'package:caree/core/view/login/register.screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {

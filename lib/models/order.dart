@@ -2,7 +2,7 @@ import 'package:caree/models/food.dart';
 import 'package:caree/models/user.dart';
 
 class Order {
-  late String? uuid;
+  late int? id;
   late String status;
   late String? createdAt;
   late String? updatedAt;
@@ -10,7 +10,7 @@ class Order {
   late Food? food;
 
   Order(
-      {this.uuid,
+      {this.id,
       required this.status,
       this.createdAt,
       this.updatedAt,
@@ -18,7 +18,7 @@ class Order {
       this.food});
 
   Order.fromJson(Map<String, dynamic> json) {
-    uuid = json['uuid'];
+    id = json['id'];
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -29,7 +29,7 @@ class Order {
 
   @override
   String toString() {
-    return "Order: { uuid: $uuid, status: $status, user: $user, food: $food }";
+    return "Order: { id: $id, status: $status, user: $user, food: $food }";
   }
 
   // Map<String, dynamic> toJson() {

@@ -1,36 +1,35 @@
 import 'package:caree/constants.dart';
-import 'package:caree/main.dart';
-import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
+import 'package:caree/core/view/home/controllers/food_controller.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
-class FinishOrderScreen extends StatefulWidget {
-  const FinishOrderScreen({Key? key, required this.user}) : super(key: key);
+class FinishOrderScreen extends StatelessWidget {
+  final FoodController _foodController = Get.find<FoodController>();
+  final _userProvider = UserProvider(DioClient().init());
 
-  final User user;
-
-  @override
-  _FinishOrderScreenState createState() => _FinishOrderScreenState();
-}
-
-class _FinishOrderScreenState extends State<FinishOrderScreen> {
-  _saveRating(int rating, String userUuid) async {
-    await API.saveRating(rating, userUuid);
+  _saveRating(int rating, int userUuid) async {
+    await _userProvider.saveRating(rating, userUuid);
+    await _foodController.fetchListFood();
 
     EasyLoading.showSuccess("Berhasil memberi penilaian!");
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Main()));
+    Get.toNamed(kHomeRoute);
   }
 
   @override
   Widget build(BuildContext context) {
+    var user = Get.arguments;
+
     return Scaffold(
-      body: SafeArea(
+      body: Container(
+        width: double.infinity,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
@@ -60,13 +59,13 @@ class _FinishOrderScreenState extends State<FinishOrderScreen> {
             CircleAvatar(
               radius: 30,
               backgroundColor: Colors.white,
-              backgroundImage: widget.user.picture == null
+              backgroundImage: user.picture == null
                   ? Image.asset(
                       "assets/people.png",
                       fit: BoxFit.cover,
                     ).image
                   : Image.network(
-                      "$SERVER_IP/uploads/${widget.user.picture}",
+                      "$BASE_IP/uploads/${user.picture}",
                       fit: BoxFit.cover,
                     ).image,
             ),
@@ -84,7 +83,7 @@ class _FinishOrderScreenState extends State<FinishOrderScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Bambang Sutrisno',
+                    user.fullname,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
@@ -104,7 +103,7 @@ class _FinishOrderScreenState extends State<FinishOrderScreen> {
                       color: Colors.amber,
                     ),
                     onRatingUpdate: (rating) {
-                      _saveRating(rating.toInt(), widget.user.uuid!);
+                      _saveRating(rating.toInt(), user.id!);
                     },
                   ),
                 ],

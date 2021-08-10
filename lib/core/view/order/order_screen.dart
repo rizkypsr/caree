@@ -1,4 +1,4 @@
-import 'package:caree/view/order/nested_tab_view.dart';
+import 'package:caree/core/view/order/nested_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:caree/constants.dart';
 

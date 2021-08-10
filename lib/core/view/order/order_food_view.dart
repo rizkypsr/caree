@@ -1,16 +1,11 @@
-import 'dart:convert';
-
 import 'package:caree/constants.dart';
+import 'package:caree/core/view/order/controllers/order_controller.dart';
+import 'package:caree/core/view/widgets/loading.dart';
 import 'package:caree/models/chat.dart';
 import 'package:caree/models/order.dart';
-import 'package:caree/models/single_res.dart';
-import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
-import 'package:caree/view/message/chat_screen.dart';
-import 'package:caree/utils/user_secure_storage.dart';
-import 'package:caree/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 
 class OrderFoodView extends StatefulWidget {
   const OrderFoodView({Key? key, required this.type, required this.statusOrder})
@@ -24,52 +19,14 @@ class OrderFoodView extends StatefulWidget {
 }
 
 class _OrderFoodViewState extends State<OrderFoodView> {
-  Future getAllOrder() async {
-    var localUser = await UserSecureStorage.getUser();
-    User user = User.fromJson(json.decode(localUser!));
-
-    var res = await API.getAllOrderById(user.uuid!, widget.statusOrder);
-
-    return res.data.data;
-  }
-
-  Future getAllOrdered() async {
-    var localUser = await UserSecureStorage.getUser();
-    User user = User.fromJson(json.decode(localUser!));
-
-    var res = await API.getAllOrderedById(user.uuid!, widget.statusOrder);
-
-    return res.data.data;
-  }
-
-  _deleteOrder(String orderUuid) async {
-    SingleResponse res = await API.deleteOrder(orderUuid);
-
-    if (res.success) {
-      EasyLoading.showSuccess("Berhasil menolak request");
-      setState(() {});
-    } else {
-      EasyLoading.showError(res.message);
-    }
-  }
-
-  _updateOrder(Order order, String statusOrder, String msg) async {
-    SingleResponse res = await API.updateOrder(order.uuid!, statusOrder);
-
-    if (res.success) {
-      EasyLoading.showSuccess(msg);
-      if (widget.statusOrder == 'ONGOING') {
-        Navigator.pushNamed(context, kFinishOrderRoute, arguments: order.user);
-      }
-    } else {
-      EasyLoading.showError(res.message);
-    }
-  }
+  final OrderController _orderController = Get.find<OrderController>();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: widget.type == 'myfood' ? getAllOrder() : getAllOrdered(),
+        future: widget.type == 'myfood'
+            ? _orderController.getAllOrder(widget.statusOrder)
+            : _orderController.getAllOrdered(widget.statusOrder),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
@@ -85,7 +42,7 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, kDetailOrder,
+                                Get.toNamed(kDetailOrder,
                                     arguments: orders[index]);
                               },
                               child: Container(
@@ -116,8 +73,8 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                                 fontSize: 16.0),
                                           ),
                                           Text(
-                                            orders[index].user!.fullname,
-                                            textAlign: TextAlign.center,
+                                            orders[index].user!.fullname!,
+                                            overflow: TextOverflow.fade,
                                             style: TextStyle(fontSize: 12.0),
                                           ),
                                         ],
@@ -127,9 +84,27 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                             widget.statusOrder != "FINISHED"
                                         ? Expanded(
                                             child: IconButton(
-                                                onPressed: () {
-                                                  _deleteOrder(
-                                                      orders[index].uuid!);
+                                                onPressed: () async {
+                                                  var res =
+                                                      await _orderController
+                                                          .deleteOrder(
+                                                              orders[index]
+                                                                  .id!);
+
+                                                  if (res.success) {
+                                                    widget.type == 'myfood'
+                                                        ? _orderController
+                                                            .getAllOrder(widget
+                                                                .statusOrder)
+                                                        : _orderController
+                                                            .getAllOrdered(widget
+                                                                .statusOrder);
+
+                                                    setState(() {});
+                                                  } else {
+                                                    EasyLoading.showError(
+                                                        "Terjadi kesalahan!");
+                                                  }
                                                 },
                                                 icon: Icon(
                                                   Icons.do_not_disturb_rounded,
@@ -143,10 +118,20 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                                 onPressed: () async {
                                                   switch (widget.statusOrder) {
                                                     case 'WAITING':
-                                                      _updateOrder(
-                                                          orders[index],
-                                                          'ONGOING',
-                                                          'Berhasil Menerima Permintaan');
+                                                      var res =
+                                                          await _orderController
+                                                              .updateOrder(
+                                                                  orders[index],
+                                                                  'ONGOING');
+
+                                                      if (res.success) {
+                                                        EasyLoading.showSuccess(
+                                                            'Berhasil Menerima Permintaan');
+                                                      } else {
+                                                        EasyLoading.showError(
+                                                            res.message);
+                                                      }
+
                                                       var chat = Chat(
                                                           sender: orders[index]
                                                               .food!
@@ -156,19 +141,37 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                                                   .user!,
                                                           message: "Dari Awal");
 
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (ctx) =>
-                                                                  ChatScreen(
-                                                                    chat: chat,
-                                                                  )));
+                                                      Get.toNamed(
+                                                          kChatPrivateRoute,
+                                                          arguments: chat);
+
+                                                      // Navigator.push(
+                                                      //     context,
+                                                      //     MaterialPageRoute(
+                                                      //         builder: (ctx) =>
+                                                      //             ChatScreen(
+                                                      //               chat: chat,
+                                                      //             )));
                                                       break;
                                                     case 'ONGOING':
-                                                      _updateOrder(
-                                                          orders[index],
-                                                          'FINISHED',
-                                                          'Order Selesai!');
+                                                      var res =
+                                                          await _orderController
+                                                              .updateOrder(
+                                                                  orders[index],
+                                                                  'FINISHED');
+
+                                                      if (res.success) {
+                                                        EasyLoading.showSuccess(
+                                                            'Pesanan selesai!');
+                                                        Get.toNamed(
+                                                            kFinishOrderRoute,
+                                                            arguments:
+                                                                orders[index]
+                                                                    .user);
+                                                      } else {
+                                                        EasyLoading.showError(
+                                                            res.message);
+                                                      }
                                                       break;
                                                   }
                                                 },

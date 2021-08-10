@@ -1,5 +1,3 @@
-import 'package:caree/constants.dart';
-import 'package:caree/main.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 

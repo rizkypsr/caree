@@ -7,11 +7,11 @@ class MapController extends GetxController {
 
   @override
   void onInit() {
-    _setMarker();
+    setMarker();
     super.onInit();
   }
 
-  void _setMarker() {
+  void setMarker() {
     markers.clear();
     markers.add(Marker(
       markerId: MarkerId("location"),

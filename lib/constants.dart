@@ -16,6 +16,7 @@ const kFinishOrderRoute = '/finish';
 const kAddFood = '/addfood';
 const kDetailFood = '/detailFood';
 const kDetailOrder = '/detailOrder';
+const kDetailProfile = '/detailProfile';
 const kWelcomeRoute = '/welcome';
 const kProfileFormRoute = '/profileForm';
 const kFoodListRoute = '/foodList';

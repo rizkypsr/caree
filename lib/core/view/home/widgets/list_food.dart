@@ -1,7 +1,7 @@
 import 'package:caree/constants.dart';
 import 'package:caree/core/view/home/controllers/food_controller.dart';
-import 'package:caree/view/home/widget/empty_state.dart';
-import 'package:caree/view/widgets/loading.dart';
+import 'package:caree/core/view/home/widgets/empty_state.dart';
+import 'package:caree/core/view/widgets/loading.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,7 +41,10 @@ class ListFood extends StatelessWidget {
                         }
 
                         return InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed(kDetailFood,
+                                arguments: _foodController.listFood[index]);
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 24.0, horizontal: 26.0),
@@ -168,7 +171,7 @@ class ListFood extends StatelessWidget {
                                                   _foodController
                                                       .listFood[index]
                                                       .user!
-                                                      .fullname,
+                                                      .fullname!,
                                                   1),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,

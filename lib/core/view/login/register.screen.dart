@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:caree/constants.dart';
 import 'package:caree/core/controllers/user_controller.dart';
-import 'package:caree/main.dart';
+import 'package:caree/core/view/login/login_screen.dart';
+import 'package:caree/core/view/login/widgets/password_text_field.dart';
+import 'package:caree/core/view/login/widgets/rounded_text_field.dart';
 import 'package:caree/models/single_res.dart';
-import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/auth.dart';
 import 'package:caree/utils/user_secure_storage.dart';
-import 'package:caree/view/login/login_screen.dart';
-import 'package:caree/view/login/widgets/password_text_field.dart';
-import 'package:caree/view/login/widgets/phone_text_field.dart';
-import 'package:caree/view/login/widgets/rounded_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -26,8 +22,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
   UserController userController = Get.find<UserController>();
+
+  var _authProvider = Auth(DioClient().init());
 
   @override
   void dispose() {
@@ -100,16 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   backgroundColor: kPrimaryColor.withOpacity(0.2),
                 ),
                 SizedBox(
-                  height: 10.0,
-                ),
-                PhoneTextField(
-                  controller: _phoneController,
-                  label: "Nomor hp",
-                  hintText: "Masukkan no hp",
-                  color: kSecondaryColor.withOpacity(0.3),
-                  backgroundColor: kPrimaryColor.withOpacity(0.2),
-                ),
-                SizedBox(
                   height: 30.0,
                 ),
                 SizedBox(
@@ -125,35 +112,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         String fullname = _nameController.text;
                         String email = _emailController.text;
                         String password = _passwordController.text;
-                        String phone = _phoneController.text;
 
-                        if (fullname.isNotEmpty &&
+                        bool isNotEmptyField = fullname.isNotEmpty &&
                             email.isNotEmpty &&
-                            password.isNotEmpty &&
-                            fullname.isNotEmpty) {
+                            fullname.isNotEmpty;
+
+                        if (isNotEmptyField) {
                           EasyLoading.show(status: 'loading...');
-                          SingleResponse? res = await API.attemptRegister(
-                              fullname, email, password, phone);
 
-                          if (res!.success) {
-                            SingleResponse? loginRes =
-                                await API.attemptLogin(email, password);
+                          try {
+                            SingleResponse? res = await _authProvider
+                                .attemptRegister(fullname, email, password);
 
-                            User user = loginRes!.data.data;
+                            var data = res!.data;
 
-                            await UserSecureStorage.setToken(
-                                loginRes.data.token);
-                            await userController.updateLocalUser(user);
+                            await UserSecureStorage.setToken(data.token);
+                            await userController.updateLocalUser(data.data);
 
-                            await API.getVerification(email);
+                            await _authProvider.getVerification(email);
 
                             EasyLoading.dismiss();
 
                             Get.offAndToNamed(kHomeRoute);
-                          } else {
+                          } catch (err) {
                             EasyLoading.dismiss();
-                            EasyLoading.showError(
-                                'Email yang Anda gunakan sudah terdaftar');
+                            EasyLoading.showError(err.toString());
                           }
                         } else {
                           EasyLoading.dismiss();

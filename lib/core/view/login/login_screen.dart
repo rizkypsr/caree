@@ -1,16 +1,14 @@
 import 'package:caree/constants.dart';
 import 'package:caree/core/controllers/user_controller.dart';
-import 'package:caree/main.dart';
+import 'package:caree/core/view/login/register.screen.dart';
+import 'package:caree/core/view/login/widgets/password_text_field.dart';
+import 'package:caree/core/view/login/widgets/rounded_text_field.dart';
 import 'package:caree/models/single_res.dart';
-import 'package:caree/models/user.dart';
-import 'package:caree/network/API.dart';
-import 'package:caree/view/login/register.screen.dart';
-import 'package:caree/view/login/widgets/password_text_field.dart';
-import 'package:caree/view/login/widgets/rounded_text_field.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/auth.dart';
 import 'package:caree/utils/user_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'dart:convert' show json;
 
 import 'package:get/get.dart';
 
@@ -25,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   UserController userController = Get.find<UserController>();
+  var _authProivder = Auth(DioClient().init());
 
   @override
   void dispose() {
@@ -111,27 +110,26 @@ class _LoginScreenState extends State<LoginScreen> {
                         var email = _emailController.text;
                         var password = _passwordController.text;
 
-                        if (email.isNotEmpty && password.isNotEmpty) {
-                          SingleResponse? loginRes =
-                              await API.attemptLogin(email, password);
+                        var isNotEmptyField =
+                            email.isNotEmpty && password.isNotEmpty;
 
-                          var resData = loginRes!.data;
-
-                          if (loginRes.success) {
-                            User user = resData.data;
+                        if (isNotEmptyField) {
+                          try {
                             EasyLoading.show(status: 'loading...');
+                            SingleResponse? res = await _authProivder
+                                .attemptLogin(email, password);
 
-                            await UserSecureStorage.setToken(resData.token);
-                            await userController.updateLocalUser(user);
+                            var data = res!.data;
+
+                            await UserSecureStorage.setToken(data.token);
+                            await userController.updateLocalUser(data.data);
 
                             EasyLoading.dismiss();
 
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(builder: (context) => Main()),
-                                (route) => false);
-                          } else {
-                            EasyLoading.showError(
-                                'Email dan Password tidak cocok!');
+                            Get.offAndToNamed(kHomeRoute);
+                          } catch (e) {
+                            EasyLoading.dismiss();
+                            EasyLoading.showError(e.toString());
                           }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(snackbar);

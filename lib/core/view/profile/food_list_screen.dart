@@ -1,8 +1,8 @@
 import 'package:caree/constants.dart';
 import 'package:caree/core/view/home/add_food/add_food_screen.dart';
 import 'package:caree/core/view/home/controllers/food_controller.dart';
+import 'package:caree/core/view/widgets/loading.dart';
 import 'package:caree/models/food.dart';
-import 'package:caree/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +23,7 @@ class FoodListScreen extends StatelessWidget {
     Widget continueButton = ElevatedButton(
         child: Text("Hapus"),
         onPressed: () async {
-          await foodController.deleteFood(food.uuid);
+          await foodController.deleteFood(food.id);
           Get.back();
         },
         style: ElevatedButton.styleFrom(primary: Colors.red[400]));
@@ -110,11 +110,15 @@ class FoodListScreen extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    food[index].name,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600),
+                                  SizedBox(
+                                    width: 240,
+                                    child: Text(
+                                      food[index].name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                   Text(
                                     food[index].description,

@@ -1,55 +1,31 @@
+import 'dart:async';
+
 import 'package:caree/constants.dart';
-import 'package:caree/models/order.dart';
+import 'package:caree/core/view/home/controllers/map_controller.dart';
 import 'package:caree/utils/map_util.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetailOrderScreen extends StatefulWidget {
-  const DetailOrderScreen({Key? key, required this.order}) : super(key: key);
-
-  final Order order;
-
-  @override
-  _DetailOrderScreenState createState() => _DetailOrderScreenState();
-}
-
-class _DetailOrderScreenState extends State<DetailOrderScreen> {
-  late GoogleMapController mapController;
-
-  final Set<Marker> _markers = {};
-
-  late LatLng _center = LatLng(widget.order.food!.addressPoint!.coordinates[0],
-      widget.order.food!.addressPoint!.coordinates[1]);
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  _addMarker() {
-    setState(() {
-      _markers.add(Marker(
-          markerId: MarkerId(_center.toString()),
-          position: _center,
-          infoWindow: InfoWindow(title: 'Tempat Makanan', snippet: ''),
-          icon: BitmapDescriptor.defaultMarker));
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _addMarker();
-  }
-
-  @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
-  }
-
+class DetailOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final Completer<GoogleMapController> _googleMapController = Completer();
+    final MapController _mapController = Get.find<MapController>();
+
+    var order = Get.arguments;
+
+    Future<void> _updateMapPosition(LatLng position) async {
+      final GoogleMapController controller = await _googleMapController.future;
+      _mapController.center.value = position;
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: position, zoom: 18)));
+      _mapController.setMarker();
+    }
+
+    _updateMapPosition(LatLng(order.food.addressPoint!.coordinates[0],
+        order.food.addressPoint!.coordinates[1]));
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,7 +51,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
             children: [
               Text("Status Pesanan"),
               Text(
-                widget.order.status,
+                order.status,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -89,7 +65,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
               ),
               Text("Pemilik Makanan"),
               Text(
-                widget.order.food!.user!.fullname,
+                order.food!.user!.fullname,
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               SizedBox(
@@ -97,7 +73,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
               ),
               Text("Penerima"),
               Text(
-                widget.order.user!.fullname,
+                order.user!.fullname,
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               Divider(
@@ -127,7 +103,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.network(
-                                      "$BASE_IP/uploads/${widget.order.food!.picture}",
+                                      "$BASE_IP/uploads/${order.food!.picture}",
                                       fit: BoxFit.cover,
                                     )),
                               ),
@@ -138,13 +114,13 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.order.food!.name,
+                                    order.food!.name,
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.w600),
                                   ),
                                   Text(
-                                    widget.order.food!.description,
+                                    order.food!.description,
                                     style: TextStyle(fontSize: 11.0),
                                   ),
                                 ],
@@ -166,18 +142,21 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
               SizedBox(
                 height: 20.0,
               ),
-              Container(
-                width: double.infinity,
-                height: 200,
-                child: GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    markers: _markers,
-                    onTap: (latlng) {
-                      MapUtils.openMap(latlng.latitude, latlng.longitude);
-                    },
-                    initialCameraPosition:
-                        CameraPosition(target: _center, zoom: 18)),
-              ),
+              Obx(() => Container(
+                    width: double.infinity,
+                    height: 200,
+                    child: GoogleMap(
+                        onMapCreated: (controller) {
+                          _googleMapController.complete(controller);
+                        },
+                        markers: _mapController.markers,
+                        onTap: (latlng) {
+                          MapUtils.openMap(latlng.latitude, latlng.longitude);
+                        },
+                        myLocationButtonEnabled: false,
+                        initialCameraPosition: CameraPosition(
+                            target: _mapController.center.value, zoom: 18)),
+                  )),
             ],
           )),
     );

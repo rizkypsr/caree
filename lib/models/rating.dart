@@ -1,15 +1,15 @@
 class Rating {
-  String uuid;
+  int id;
   int ratingValue;
 
-  Rating({required this.ratingValue, required this.uuid});
+  Rating({required this.ratingValue, required this.id});
 
   factory Rating.fromJson(Map<String, dynamic> json) {
-    return Rating(uuid: json['uuid'], ratingValue: json['rating']);
+    return Rating(id: json['id'], ratingValue: json['rating']);
   }
 
   @override
   String toString() {
-    return 'Rating: {uuid: ${uuid}, rating: ${ratingValue}}';
+    return 'Rating: {id: $id, rating: $ratingValue}';
   }
 }

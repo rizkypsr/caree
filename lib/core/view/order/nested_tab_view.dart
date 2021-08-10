@@ -1,5 +1,5 @@
 import 'package:caree/constants.dart';
-import 'package:caree/view/order/order_food_view.dart';
+import 'package:caree/core/view/order/order_food_view.dart';
 import 'package:flutter/material.dart';
 
 class NestedTabBarView extends StatefulWidget {

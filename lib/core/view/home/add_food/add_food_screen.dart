@@ -24,16 +24,11 @@ class AddFoodScreen extends StatefulWidget {
 
 class _AddFoodScreenState extends State<AddFoodScreen> {
   final TextEditingController _foodNameController = TextEditingController();
-
   final TextEditingController _foodDescController = TextEditingController();
-
   final TextEditingController _foodPickupTimeController =
       TextEditingController();
-
   final Completer<GoogleMapController> _googleMapController = Completer();
-
   final MapController mapController = Get.find<MapController>();
-
   final FoodController foodController = Get.find<FoodController>();
 
   void getImageFromGallery() async {
@@ -119,7 +114,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         foodDesc.isNotEmpty &&
         foodPickupTimes.isNotEmpty) {
       var _food = Food(
-        uuid: food.uuid,
+        id: food.id,
         name: foodName,
         description: foodDesc,
         pickupTimes: foodPickupTimes,
@@ -148,7 +143,6 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("logs: rebulding...");
     var data = Get.arguments;
 
     if (data['food'] != null) {
