@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             EasyLoading.dismiss();
 
-                            Get.offAndToNamed(kHomeRoute);
+                            Get.offAllNamed(kHomeRoute);
                           } catch (e) {
                             EasyLoading.dismiss();
                             EasyLoading.showError(e.toString());

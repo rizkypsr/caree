@@ -85,25 +85,6 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.instance.getInitialMessage();
 
     FirebaseMessaging.instance.subscribeToTopic('food');
-
-    FirebaseMessaging.instance
-        .getToken()
-        .then((value) => print("token: $value"));
-
-    FirebaseMessaging.onMessage.listen((event) {
-      if (event.notification != null) {
-        print(event.notification!.title);
-        print(event.notification!.body);
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      final routeFromMessage = message.data['route'];
-      final dataFromMessage = message.data['data'];
-
-      print(routeFromMessage);
-      print(dataFromMessage);
-    });
   }
 
   @override

@@ -3,13 +3,14 @@
 
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         <uses-permission android:name=" android.permission.ACCESS_COARSE_LOCATION"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
 
         <queries>
           <package android:name="com.google.android.apps.maps" />
         </queries>
 
    <application
-        android:label="caree"
+        android:label="Caree"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
 
