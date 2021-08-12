@@ -9,20 +9,6 @@ class Data<T> {
     token = json['token'] != null ? json['token'] : null;
     data = json[keyName] != null ? create(json[keyName]) : null;
   }
-
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = Map<String, dynamic>();
-  //   data['token'] = this.token;
-  //   if (this.user != null) {
-  //     data['user'] = this.user!.toJson();
-  //   }
-  //   return data;
-  // }
-
-  @override
-  String toString() {
-    return "Data: { token: $token, data: $data }";
-  }
 }
 
 Type typeOf<T>() => T;

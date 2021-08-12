@@ -67,10 +67,6 @@ class OrderController extends GetxController {
     // If order > 0, that's mean food have an order with status FINISHED OR ONGOING
     var order = food.order.where((o) => o.status != "WAITING").toList().length;
 
-    print(food.order);
-    print("isFoodOwner: $isFoodOwner");
-    print("order: $order");
-
     // true: disable button
     // false: enable button
 

@@ -18,12 +18,6 @@ class MessageController extends GetxController {
     _socket();
   }
 
-  @override
-  void onClose() {
-    print("Msg Controller was closed");
-    super.onClose();
-  }
-
   Future<void> getAllChatById() async {
     _showLoading();
 

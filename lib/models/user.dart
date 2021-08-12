@@ -42,9 +42,4 @@ class User {
     data['ratingAvg'] = this.ratingAvg;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'User: {id : $id, fn : $fullname, email : $email, pic : $picture, rate : $ratingAvg, isVerified: $isVerified}';
-  }
 }

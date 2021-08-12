@@ -58,7 +58,7 @@ class UserProvider {
 
       await _client.post("/rating", data: data);
     } catch (e) {
-      print(e);
+      throw (e);
     }
   }
 }

@@ -26,24 +26,4 @@ class Order {
     food =
         json['food'] != null ? Food.fromJson(json['food'], (v) => null) : null;
   }
-
-  @override
-  String toString() {
-    return "Order: { id: $id, status: $status, user: $user, food: $food }";
-  }
-
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = Map<String, dynamic>();
-  //   data['uuid'] = this.uuid;
-  //   data['status'] = this.status;
-  //   data['createdAt'] = this.createdAt;
-  //   data['updatedAt'] = this.updatedAt;
-  //   if (this.user != null) {
-  //     data['user'] = this.user.toJson();
-  //   }
-  //   if (this.food != null) {
-  //     data['food'] = this.food.toJson();
-  //   }
-  //   return data;
-  // }
 }

@@ -145,13 +145,6 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                                           kChatPrivateRoute,
                                                           arguments: chat);
 
-                                                      // Navigator.push(
-                                                      //     context,
-                                                      //     MaterialPageRoute(
-                                                      //         builder: (ctx) =>
-                                                      //             ChatScreen(
-                                                      //               chat: chat,
-                                                      //             )));
                                                       break;
                                                     case 'ONGOING':
                                                       var res =

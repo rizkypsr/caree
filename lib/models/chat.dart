@@ -35,9 +35,4 @@ class Chat {
     data['updatedAt'] = this.updatedAt;
     return data;
   }
-
-  @override
-  String toString() {
-    return "Chat: { sender: $sender, receiver: $receiver, message: $message  }";
-  }
 }

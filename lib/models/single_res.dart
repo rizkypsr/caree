@@ -16,9 +16,4 @@ class SingleResponse<T> extends ResponseData {
         message: json["message"],
         data: create(json["data"]));
   }
-
-  @override
-  String toString() {
-    return "Response: {success: $success, message: $message, data : { $data } }";
-  }
 }

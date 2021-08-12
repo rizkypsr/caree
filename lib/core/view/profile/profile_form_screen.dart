@@ -62,7 +62,6 @@ class ProfileFormScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("logs: rebuild...");
     var user = Get.arguments;
 
     if (user != null) {

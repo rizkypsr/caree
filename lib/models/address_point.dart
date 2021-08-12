@@ -15,9 +15,4 @@ class AddressPoint {
     data['coordinates'] = this.coordinates;
     return data;
   }
-
-  @override
-  String toString() {
-    return "AP: { type: $type, coordinates: $coordinates }";
-  }
 }

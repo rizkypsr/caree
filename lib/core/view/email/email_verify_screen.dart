@@ -53,7 +53,6 @@ class _EmailVerifyScreenState extends State<EmailVerifyScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      print("onresumed");
       getUser();
     }
   }

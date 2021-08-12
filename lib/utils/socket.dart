@@ -13,10 +13,7 @@ class SocketClient {
             .setTransports(['websocket'])
             .disableAutoConnect()
             .build());
-
-    _socket!.on('connect', (_) => print('Connected'));
     _socket!.connect();
-    _socket!.onConnectError((data) => print("err: $data"));
   }
 
   static emit(String event, dynamic arguments) {

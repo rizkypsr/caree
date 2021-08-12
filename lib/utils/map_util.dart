@@ -22,7 +22,8 @@ class MapUtils {
       if (await canLaunch(appleUrl)) {
         await launch(appleUrl);
       } else {
-        throw 'Could not open the map.';
+        EasyLoading.showError(
+            'Tidak bisa membuka Google Maps. Pastikan Google Maps Anda up to date');
       }
     }
   }

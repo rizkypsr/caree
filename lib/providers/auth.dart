@@ -47,8 +47,6 @@ class Auth {
       var results = SingleResponse<Data>.fromJson(response.data,
           (json) => Data.fromJson(json, (data) => User.fromJson(data), "user"));
 
-      print("logs: $firebaseToken");
-
       Get.find<UserController>().updateUser(
           User(id: results.data!.data.id, firebaseToken: firebaseToken));
 
