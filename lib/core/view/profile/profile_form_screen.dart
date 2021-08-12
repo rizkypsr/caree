@@ -16,9 +16,8 @@ class ProfileFormScreen extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
 
   _getImageFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-    );
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.gallery, imageQuality: 25);
 
     if (pickedFile != null) {
       _userController.imagePath.value = pickedFile.path;
@@ -28,9 +27,8 @@ class ProfileFormScreen extends StatelessWidget {
   }
 
   _getImageFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-    );
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.camera, imageQuality: 25);
 
     if (pickedFile != null) {
       _userController.imagePath.value = pickedFile.path;
