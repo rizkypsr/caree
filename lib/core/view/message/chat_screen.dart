@@ -42,7 +42,6 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final ChatController _chatController = Get.find<ChatController>();
     final UserController _userController = Get.find<UserController>();
-
     Chat chat = Get.arguments;
 
     _chatController.getAllPrivateChat(chat.sender.id, chat.receiver.id);
@@ -65,12 +64,10 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: Colors.white,
               backgroundImage: chat.receiver.id == _userController.user.value.id
                   ? chat.sender.picture != null
-                      ? NetworkImage(
-                          "$BASE_IP/uploads/${chat.receiver.picture}")
+                      ? NetworkImage("$BASE_IP/${chat.receiver.picture}")
                       : AssetImage("assets/people.png") as ImageProvider
                   : chat.receiver.picture != null
-                      ? NetworkImage(
-                          "$BASE_IP/uploads/${chat.receiver.picture}")
+                      ? NetworkImage("$BASE_IP/${chat.receiver.picture}")
                       : AssetImage("assets/people.png") as ImageProvider,
             ),
             SizedBox(

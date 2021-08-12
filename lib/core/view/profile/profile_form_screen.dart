@@ -145,8 +145,7 @@ class ProfileFormScreen extends StatelessWidget {
                                 .imagePath.value.isNotEmpty
                             ? FileImage(File(_userController.imagePath.value))
                             : user.picture != null
-                                ? Image.network(
-                                        "$BASE_IP/uploads/${user.picture}")
+                                ? Image.network("$BASE_IP/${user.picture}")
                                     .image
                                 : Image.network(
                                     "https://ui-avatars.com/api/?name=${user.fullname}",

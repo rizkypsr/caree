@@ -27,9 +27,8 @@ class FoodController extends GetxController {
   }
 
   Future<void> fetchListFood() async {
+    showLoading();
     try {
-      showLoading();
-
       var res = await _foodProvider.getAllFood();
       var pos = await _getCurrentLocation();
 
@@ -47,11 +46,11 @@ class FoodController extends GetxController {
       listFood.clear();
 
       listFood.addAll(food);
-
-      hideLoading();
     } catch (e) {
-      print("logs: $e");
+      Get.snackbar("Error", e.toString());
     }
+
+    hideLoading();
   }
 
   Future<Position> _getCurrentLocation() async {

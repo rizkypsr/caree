@@ -29,6 +29,14 @@ class AppInterceptors extends Interceptor {
       }
     }
 
+    if (err.type == DioErrorType.connectTimeout) {
+      return handler.next(
+        err
+          ..error =
+              'A network timeout has occurred. Pastikan kamu terkoneksi internet!',
+      );
+    }
+
     return super.onError(err, handler);
   }
 }

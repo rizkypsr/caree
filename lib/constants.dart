@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-const BASE_IP = 'http://192.168.1.64:5000';
-const SERVER_IP = 'http://192.168.1.64:5000/api/v1';
+const BASE_IP = 'https://image-caree.s3.ap-southeast-1.amazonaws.com';
+const SERVER_IP =
+    'http://caree-api-env.eba-jqjm92sg.ap-southeast-1.elasticbeanstalk.com/api/v1';
+const SOCKET_URL =
+    'http://caree-api-env.eba-jqjm92sg.ap-southeast-1.elasticbeanstalk.com';
 
 const kPrimaryColor = Color(0xFF11C4A8);
 const kSecondaryColor = Color(0xFF292D33);

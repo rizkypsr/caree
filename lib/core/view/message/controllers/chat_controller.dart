@@ -45,7 +45,6 @@ class ChatController extends GetxController {
     SocketClient.emit('user_connected', user.id);
 
     SocketClient.subscribe("new_message", (data) {
-      print("logs");
       Chat incomingChat = Chat.fromJson(data);
 
       listChat.add(incomingChat);

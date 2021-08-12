@@ -68,7 +68,7 @@ class MessageScreen extends StatelessWidget {
                                     backgroundImage: chat.receiver.picture !=
                                             null
                                         ? NetworkImage(
-                                            "$BASE_IP/uploads/${chat.receiver.picture}")
+                                            "$BASE_IP/${chat.receiver.picture}")
                                         : AssetImage("assets/people.png")
                                             as ImageProvider,
                                   ),

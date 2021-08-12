@@ -88,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                             child: user.picture != null
                                 ? Image.network(
-                                    "$BASE_IP/uploads/${user.picture}",
+                                    "$BASE_IP/${user.picture}",
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(

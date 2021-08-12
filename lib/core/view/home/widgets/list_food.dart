@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:caree/constants.dart';
 import 'package:caree/core/view/home/controllers/food_controller.dart';
 import 'package:caree/core/view/home/widgets/empty_state.dart';
@@ -6,6 +7,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ListFood extends StatelessWidget {
   final FoodController _foodController = Get.find<FoodController>();
@@ -54,17 +56,35 @@ class ListFood extends StatelessWidget {
                                   alignment: Alignment.bottomCenter,
                                   clipBehavior: Clip.none,
                                   children: [
-                                    Container(
-                                      height: 90,
-                                      width: 120,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                "$BASE_IP/uploads/${_foodController.listFood[index].picture}")),
-                                      ),
+                                    CachedNetworkImage(
+                                      imageUrl:
+                                          "$BASE_IP/${_foodController.listFood[index].picture}",
+                                      imageBuilder: (_, imageProvider) =>
+                                          Container(
+                                              height: 90,
+                                              width: 120,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20)),
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: imageProvider),
+                                              )),
+                                      placeholder: (_, __) =>
+                                          Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                height: 90,
+                                                width: 120,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                20))),
+                                              )),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     ),
                                     Positioned(
                                       bottom: -15,
@@ -161,7 +181,7 @@ class ListFood extends StatelessWidget {
                                                           .picture !=
                                                       null
                                                   ? NetworkImage(
-                                                      "$BASE_IP/uploads/${_foodController.listFood[index].user!.picture}")
+                                                      "$BASE_IP/${_foodController.listFood[index].user!.picture}")
                                                   : AssetImage(
                                                           "assets/people.png")
                                                       as ImageProvider,

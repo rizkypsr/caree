@@ -32,9 +32,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   final FoodController foodController = Get.find<FoodController>();
 
   void getImageFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-    );
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.gallery, imageQuality: 1);
 
     if (pickedFile != null) {
       foodController.imagePath.value = pickedFile.path;
@@ -44,9 +43,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   }
 
   _getImageFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.camera,
-    );
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.camera, imageQuality: 1);
 
     if (pickedFile != null) {
       foodController.imagePath.value = pickedFile.path;
@@ -217,7 +215,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                             )
                           : data['food'] != null
                               ? Image.network(
-                                  "$BASE_IP/uploads/${data['food'].picture}",
+                                  "$BASE_IP/${data['food'].picture}",
                                   fit: BoxFit.cover,
                                 )
                               : Icon(

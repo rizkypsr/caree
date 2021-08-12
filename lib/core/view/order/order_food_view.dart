@@ -54,7 +54,7 @@ class _OrderFoodViewState extends State<OrderFoodView> {
                                       child: CircleAvatar(
                                         radius: 25,
                                         backgroundImage: NetworkImage(
-                                            '$BASE_IP/uploads/${orders[index].food!.picture}'),
+                                            '$BASE_IP/${orders[index].food!.picture}'),
                                       ),
                                     ),
                                     SizedBox(

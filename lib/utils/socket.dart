@@ -8,7 +8,7 @@ class SocketClient {
     if (_socket != null) return;
 
     _socket = client.io(
-        BASE_IP,
+        SOCKET_URL,
         client.OptionBuilder()
             .setTransports(['websocket'])
             .disableAutoConnect()
@@ -16,6 +16,7 @@ class SocketClient {
 
     _socket!.on('connect', (_) => print('Connected'));
     _socket!.connect();
+    _socket!.onConnectError((data) => print("err: $data"));
   }
 
   static emit(String event, dynamic arguments) {

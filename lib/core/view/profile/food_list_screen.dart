@@ -100,7 +100,7 @@ class FoodListScreen extends StatelessWidget {
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.network(
-                                      "$BASE_IP/uploads/${food[index].picture}",
+                                      "$BASE_IP/${food[index].picture}",
                                       fit: BoxFit.cover,
                                     )),
                               ),
