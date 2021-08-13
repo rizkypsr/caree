@@ -165,7 +165,7 @@ class DetailScreen extends StatelessWidget {
                           ),
                           Text(
                             food.user!.ratingAvg == null
-                                ? "New User"
+                                ? "User baru"
                                 : double.parse(food.user!.ratingAvg!)
                                     .toStringAsFixed(1)
                                     .toString(),

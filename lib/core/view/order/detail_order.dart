@@ -72,10 +72,29 @@ class DetailOrderScreen extends StatelessWidget {
                 height: 10.0,
               ),
               Text("Penerima"),
-              Text(
-                order.user!.fullname,
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+              Wrap(
+                  spacing: 3.0,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      order.user!.fullname,
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFF7CA63),
+                      size: 20,
+                    ),
+                    Text(
+                      order.user!.ratingAvg == null
+                          ? "User Baru"
+                          : double.parse(order.user!.ratingAvg!)
+                              .toStringAsFixed(1)
+                              .toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 10.0),
+                    ),
+                  ]),
               Divider(
                 color: kSecondaryColor.withAlpha(100),
               ),

@@ -13,12 +13,14 @@ class FinishOrderScreen extends StatelessWidget {
   final _userProvider = UserProvider(DioClient().init());
 
   _saveRating(int rating, int userUuid) async {
+    EasyLoading.show(status: "Tunggu sebentar...");
     await _userProvider.saveRating(rating, userUuid);
     await _foodController.fetchListFood();
 
+    EasyLoading.dismiss();
     EasyLoading.showSuccess("Berhasil memberi penilaian!");
 
-    Get.toNamed(kHomeRoute);
+    Get.offNamed(kHomeRoute);
   }
 
   @override
@@ -84,6 +86,8 @@ class FinishOrderScreen extends StatelessWidget {
                 children: [
                   Text(
                     user.fullname,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
