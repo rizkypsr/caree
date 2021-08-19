@@ -34,6 +34,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,7 +96,9 @@ class _MyAppState extends State<MyApp> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
-            return Main();
+            return ShowCaseWidget(
+              builder: Builder(builder: (context) => Main()),
+            );
           }
 
           if (snapshot.hasError) {
@@ -112,12 +116,81 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+class KeysToBeIherited extends InheritedWidget {
+  final GlobalKey? menuOrder;
+  final GlobalKey? addFoodKey;
+  final GlobalKey? myFoodKey;
+  final GlobalKey? myOrderFood;
+  final GlobalKey? declineFood;
+  final GlobalKey? acceptFood;
+  final GlobalKey? cancelFood;
+  final GlobalKey? finishFood;
+
+  KeysToBeIherited(
+      {this.menuOrder,
+      this.addFoodKey,
+      this.myFoodKey,
+      this.myOrderFood,
+      this.declineFood,
+      this.acceptFood,
+      this.cancelFood,
+      this.finishFood,
+      required Widget child})
+      : super(child: child);
+
+  static KeysToBeIherited? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType(aspect: KeysToBeIherited);
+  }
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return true;
+  }
+}
+
 class Main extends StatelessWidget {
   final logger = Logger();
   final BottomNavController _navController = Get.put(BottomNavController());
+  final GlobalKey menuOrder = new GlobalKey();
+  final GlobalKey addFoodKey = new GlobalKey();
+  final GlobalKey myFoodKey = new GlobalKey();
+  final GlobalKey myOrderFood = new GlobalKey();
+  final GlobalKey declineFood = new GlobalKey();
+  final GlobalKey acceptFood = new GlobalKey();
+  final GlobalKey cancelFood = new GlobalKey();
+  final GlobalKey finishFood = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
+    SharedPreferences preferences;
+
+    displayShowcase() async {
+      preferences = await SharedPreferences.getInstance();
+      bool? showcaseVisibilityStatus = preferences.getBool("displayShowcase");
+
+      if (showcaseVisibilityStatus == null) {
+        preferences.setBool("displayShowcase", false);
+        return true;
+      }
+
+      return false;
+    }
+
+    displayShowcase().then((status) {
+      if (status) {
+        ShowCaseWidget.of(context)!.startShowCase([
+          addFoodKey,
+          menuOrder,
+          myFoodKey,
+          myOrderFood,
+          declineFood,
+          acceptFood,
+          cancelFood,
+          finishFood
+        ]);
+      }
+    });
+
     return FutureBuilder(
         future: Auth.getAuth(),
         builder: (context, snapshot) {
@@ -128,9 +201,17 @@ class Main extends StatelessWidget {
                 return Scaffold(
                     body: Obx(() {
                       List<Widget> _pages = [
-                        HomeScreen(),
+                        KeysToBeIherited(
+                            addFoodKey: addFoodKey, child: HomeScreen()),
                         MessageScreen(),
-                        OrderScreen(),
+                        KeysToBeIherited(
+                            myFoodKey: myFoodKey,
+                            myOrderFood: myOrderFood,
+                            declineFood: declineFood,
+                            acceptFood: acceptFood,
+                            cancelFood: cancelFood,
+                            finishFood: finishFood,
+                            child: OrderScreen()),
                         ProfileScreen(),
                       ];
 
@@ -150,7 +231,11 @@ class Main extends StatelessWidget {
                                 icon: FaIcon(FontAwesomeIcons.solidComment),
                                 label: 'Pesan'),
                             BottomNavigationBarItem(
-                                icon: FaIcon(FontAwesomeIcons.utensils),
+                                icon: Showcase(
+                                    key: menuOrder,
+                                    description:
+                                        "Klik disini untuk melihat pemesanan",
+                                    child: FaIcon(FontAwesomeIcons.utensils)),
                                 label: 'Pemesanan'),
                             BottomNavigationBarItem(
                                 icon: FaIcon(FontAwesomeIcons.solidUser),

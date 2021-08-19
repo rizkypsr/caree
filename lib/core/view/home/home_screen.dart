@@ -3,9 +3,11 @@ import 'package:caree/core/controllers/network_controller.dart';
 import 'package:caree/core/view/home/add_food/add_food_screen.dart';
 import 'package:caree/core/view/home/widgets/list_food.dart';
 import 'package:caree/core/view/widgets/no_internet.dart';
+import 'package:caree/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class HomeScreen extends StatelessWidget {
   final NetworkController _networkController = Get.find<NetworkController>();
@@ -18,13 +20,17 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          var data = {'mode': MODE.SAVE, 'food': null};
-          Get.toNamed(kAddFood, arguments: data);
-        },
-        child: Icon(Icons.add),
-        backgroundColor: kPrimaryColor,
+      floatingActionButton: Showcase(
+        key: KeysToBeIherited.of(context)!.addFoodKey,
+        description: "Klik disini untuk membagikan makanan",
+        child: FloatingActionButton(
+          onPressed: () {
+            var data = {'mode': MODE.SAVE, 'food': null};
+            Get.toNamed(kAddFood, arguments: data);
+          },
+          child: Icon(Icons.add),
+          backgroundColor: kPrimaryColor,
+        ),
       ),
       body: Container(
         child: Column(

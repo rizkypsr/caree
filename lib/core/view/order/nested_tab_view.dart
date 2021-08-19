@@ -1,6 +1,8 @@
 import 'package:caree/constants.dart';
 import 'package:caree/core/view/order/order_food_view.dart';
+import 'package:caree/main.dart';
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class NestedTabBarView extends StatefulWidget {
   const NestedTabBarView({Key? key, required this.statusOrder})
@@ -44,12 +46,30 @@ class _NestedTabBarViewState extends State<NestedTabBarView>
                 controller: _tabController,
                 isScrollable: true,
                 tabs: [
-                  Tab(
-                    text: 'Makanan kamu',
-                  ),
-                  Tab(
-                    text: 'Makanan Yang kamu pesan',
-                  ),
+                  widget.statusOrder == "WAITING"
+                      ? Showcase(
+                          key: KeysToBeIherited.of(context)!.myFoodKey,
+                          description:
+                              "Disini tempat menampilkan daftar pengguna yang memesan makananmu",
+                          child: Tab(
+                            text: 'Makanan kamu',
+                          ),
+                        )
+                      : Tab(
+                          text: 'Makanan kamu',
+                        ),
+                  widget.statusOrder == "WAITING"
+                      ? Showcase(
+                          key: KeysToBeIherited.of(context)!.myOrderFood,
+                          description:
+                              "Disini tempat menampilkan daftar makanan yang kamu pesan",
+                          child: Tab(
+                            text: 'Makanan yang kamu pesan',
+                          ),
+                        )
+                      : Tab(
+                          text: 'Makanan yang kamu pesan',
+                        ),
                 ],
               ),
             ),

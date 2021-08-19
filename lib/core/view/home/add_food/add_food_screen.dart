@@ -33,7 +33,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
 
   void getImageFromGallery() async {
     PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 50);
+        .getImage(source: ImageSource.gallery, imageQuality: 40);
 
     if (pickedFile != null) {
       foodController.imagePath.value = pickedFile.path;
