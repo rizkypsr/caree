@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 const BASE_IP = 'https://image-caree.s3.ap-southeast-1.amazonaws.com';
 const SERVER_IP =
-    'http://caree-api-env.eba-jqjm92sg.ap-southeast-1.elasticbeanstalk.com/api/v1';
+    'http://caree-api-env.eba-vuaeemdx.us-west-2.elasticbeanstalk.com/api/v1';
 const SOCKET_URL =
-    'http://caree-api-env.eba-jqjm92sg.ap-southeast-1.elasticbeanstalk.com';
+    'http://caree-api-env.eba-vuaeemdx.us-west-2.elasticbeanstalk.com';
 
 const kPrimaryColor = Color(0xFF11C4A8);
 const kSecondaryColor = Color(0xFF292D33);
