@@ -1,13 +1,31 @@
 import 'dart:async';
 
 import 'package:caree/constants.dart';
+import 'package:caree/core/view/home/controllers/food_controller.dart';
 import 'package:caree/core/view/home/controllers/map_controller.dart';
+import 'package:caree/network/http_client.dart';
+import 'package:caree/providers/user_provider.dart';
 import 'package:caree/utils/map_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DetailOrderScreen extends StatelessWidget {
+  final FoodController _foodController = Get.find<FoodController>();
+  final _userProvider = UserProvider(DioClient().init());
+
+  _saveRating(int rating, int userUuid) async {
+    EasyLoading.show(status: "Tunggu sebentar...");
+    await _userProvider.saveRating(rating, userUuid);
+    await _foodController.fetchListFood();
+
+    EasyLoading.dismiss();
+    EasyLoading.showSuccess("Berhasil memberi penilaian!");
+
+    Get.offNamed(kHomeRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Completer<GoogleMapController> _googleMapController = Completer();
@@ -95,6 +113,9 @@ class DetailOrderScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold, fontSize: 10.0),
                     ),
                   ]),
+              SizedBox(
+                height: 10.0,
+              ),
               Divider(
                 color: kSecondaryColor.withAlpha(100),
               ),
