@@ -115,10 +115,14 @@ class ListFood extends StatelessWidget {
                                             SizedBox(
                                               width: 5.0,
                                             ),
-                                            Text(
-                                              "${_meterToKilo(_foodController.listFood[index].distance!)} km",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                                            Expanded(
+                                              child: Text(
+                                                "${_meterToKilo(_foodController.listFood[index].distance!)} km",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             )
                                           ],
                                         ),

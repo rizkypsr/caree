@@ -58,7 +58,6 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       mapController.center.value.latitude,
       mapController.center.value.longitude
     ]);
-
     var foodName = _foodNameController.text;
     var foodDesc = _foodDescController.text;
     var foodPickupTimes = _foodPickupTimeController.text;
@@ -66,7 +65,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     if (foodName.isNotEmpty &&
         foodDesc.isNotEmpty &&
         foodPickupTimes.isNotEmpty &&
-        foodController.imagePath.isNotEmpty) {
+        foodController.imagePath.isNotEmpty &&
+        mapController.center.value.latitude != 0.0) {
       var localUser = await UserSecureStorage.getUser();
       var user = User.fromJson(json.decode(localUser!));
 
@@ -110,7 +110,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
 
     if (foodName.isNotEmpty &&
         foodDesc.isNotEmpty &&
-        foodPickupTimes.isNotEmpty) {
+        foodPickupTimes.isNotEmpty &&
+        mapController.center.value.latitude != 0.0) {
       var _food = Food(
         id: food.id,
         name: foodName,
